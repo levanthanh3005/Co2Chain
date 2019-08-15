@@ -1,0 +1,88 @@
+struct Country { 
+  string code,
+ string name,
+ address[] providerIndex,
+ mapping (address=>Provider) providers
+}
+struct Provider { 
+  address id,
+ string addr,
+ address[] serviceIndex,
+ mapping (address=>Service) services
+}
+struct Service { 
+  address id,
+ string policy,
+ uint duration,
+ address[] insuranceIndex,
+ mapping (address=>Insurance) insurances
+}
+struct Insurance { 
+  address id,
+ string from
+}
+ string[] countryIndex,
+ mapping (string=>Country) countries,
+
+function addCountry(string memory code,string memory name) public {
+  //check exist here
+ countries[code]=code;
+ countries[code]=name;
+
+ uint ssindex = countryIndex.length;
+ countryIndex.length+=1;
+ countryIndex[ssindex] = code;
+
+}
+function addProvider(address id,string memory addr) public {
+  //check exist here
+ providers[id]=id;
+ providers[id]=addr;
+
+ uint ssindex = providerIndex.length;
+ providerIndex.length+=1;
+ providerIndex[ssindex] = id;
+
+}
+function addService(address id,string memory policy,uint duration) public {
+  //check exist here
+ services[id]=id;
+ services[id]=policy;
+ services[id]=duration;
+
+ uint ssindex = serviceIndex.length;
+ serviceIndex.length+=1;
+ serviceIndex[ssindex] = id;
+
+}
+function addInsurance(address id,string memory from) public {
+  //check exist here
+ insurances[id]=id;
+ insurances[id]=from;
+
+ uint ssindex = insuranceIndex.length;
+ insuranceIndex.length+=1;
+ insuranceIndex[ssindex] = id;
+
+}
+
+function getCountryByIndex( uint index) public view return (string memory name) {
+ require(index<countryIndex.length);
+ Country currCountry = countries[countryIndex[index]];
+ return ( currCountry.name);
+}
+function getProviderByIndex( uint index) public view return (string memory addr) {
+ require(index<providerIndex.length);
+ Provider currProvider = providers[providerIndex[index]];
+ return ( currProvider.addr);
+}
+function getServiceByIndex( uint index) public view return (string memory policy,uint duration) {
+ require(index<serviceIndex.length);
+ Service currService = services[serviceIndex[index]];
+ return ( currService.policy, currService.duration);
+}
+function getInsuranceByIndex( uint index) public view return (string memory from) {
+ require(index<insuranceIndex.length);
+ Insurance currInsurance = insurances[insuranceIndex[index]];
+ return ( currInsurance.from);
+}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script type="text/javascript"
+	src="lib/dist/bignumber.min.js"></script>
+<script type="text/javascript"
+	src="lib/dist/web3.js"></script>
+
+  </head>
+  <body>
+    <div class="container">
+      <h2>Testing now</h2>
+    </div>
+    <script type="text/javascript">
+    $(document).ready(function() {    
+		var reportId = undefined;
+	    fileToValidate = undefined;
+	    facts = undefined;
+	    arcs = undefined;
+	    validated = undefined;
+	    
+	    var web3;
+	    var myContract;
+	    
+	    initWeb3();
+	    
+	    var sender1 = "0xf4aa5a106188e003cbdced3456769ea03ca45cbd";
+	    var pass1 = "password";
+
+	    var sender = sender1;
+	    var pass = pass1;
+
+	    var contractAddress = "0x36197D5b3abf83BEFBDbEc28da8Bcf1Bf9D2AB2D";
+
+	    ///////////web3 areas
+	    function initWeb3(){
+	    	var Web3 = require('web3');
+	    	web3 = new Web3();
+
+	    	//web3.setProvider(new web3.providers.HttpProvider('http://127.0.0.1:8545'));
+	    	web3 = new Web3(new Web3.providers.HttpProvider("http://0.0.0.0:8545"));
+	        console.log("start here");
+	        // $.getJSON("./build/contracts/ExampleSmartContract.json", function(json) {
+	        //     console.log(json); // this will show the info it in firebug console
+	        // });
+	        console.log(web3);
+	        var jqxhr = $.getJSON( "lib/EUComission.json", function(e) {
+	            console.log( "success" );
+	            contract = e.abi;
+	            myContract = web3.eth.contract(e.abi).at(contractAddress);
+	            console.log("done init");
+	            doTest();
+	        })
+	          .fail(function(e) {
+	            console.log( "error" );
+	            console.log(e);
+	          });
+
+	//    	sender = web3.eth.accounts[0];
+	//    	sender = "0x72b153C2F511B9De962A5a664209b08621A1C340";
+
+	    	//myContract = web3.eth.contract(abiContract).at(contractAddress);
+	    }
+	    function doTest() {
+	    	console.log(myContract);
+	    	changeValue(function(){
+	    		// console.log("Done");
+	    		listenEvent();
+	    	});
+	    	// getData();
+	    	// listenEvent();
+	    }
+	    function listenEvent(){
+	    	console.log("listenEvent");
+			var newContractEvent = myContract.MyEvent({some: 'args'},{fromBlock: 0, toBlock: 'latest'});
+			newContractEvent.watch(function(error, result){
+			      if (!error){
+			        console.log("Success");
+			        console.log(result.args);
+			        console.log(result.args.dateModified.toString()+" vs "+result.args.newValue.toString());
+			      }
+			  });
+			// var myResults = newContractEvent.get(function(error, logs){
+			// 	console.log(logs);
+			// });
+
+	    }
+	    function changeValue(callback) {
+	    	var value = Math.floor(Date.now());
+	    	console.log("Change value:"+value);
+	    	var getData = myContract.changeValue.getData(value);
+	        web3.personal.unlockAccount(sender, pass)
+
+	        tx = web3.eth.sendTransaction({
+	            from: sender,
+	            to: contractAddress,
+	            data: getData,
+	            gas : 300000,
+	            // value:  web3.toWei(10, "ether")
+	        });
+	        console.log(tx);
+	        waitForTx(tx,callback);
+	    }
+	    function getData() {
+	    	myContract.viewsCount.call(function (error, result) {
+                if (!error){
+                    console.log(">"+result+"<");
+                }else {
+                    console.log("Stop")
+                }
+        	})
+	    }
+	    function waitForTx(txid, callback) {
+	        var myTime = setInterval(function(){ 
+	            if(checkTx(txid)){
+	                clearInterval(myTime);  
+	                callback();
+	            }
+	        }, 1000);
+    	}
+	    function checkTx(txid) {
+	        console.log(web3.eth.getTransaction(txid));
+	        if(web3.eth.getTransaction(txid).blockNumber){
+	            return true;
+	        }
+	        return false;
+	    }
+	})
+    </script>>
+  </body>
+</html>

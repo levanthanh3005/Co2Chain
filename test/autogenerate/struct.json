@@ -1,0 +1,54 @@
+{
+    "Country" : {
+        "key" : {
+            "string":"code"
+        },
+        "attribute" : {
+            "string":"name",
+            "list"  : {
+                "address":"Provider"
+            }
+        }
+    },
+    "Provider" : {
+        "key" : {
+            "address":"id"
+        },
+        "attribute" : {
+            "string":"name",
+            "string":"addr",
+            "list"  : {
+                "address":"Service"
+            }
+        }
+    },
+    "Service" : {
+        "key" : {
+            "address":"id"
+        },
+        "attribute" : {
+            "string":"name",
+            "uint"  :"cost",
+            "uint"  :"duration",
+            "string":"policy",
+            "list"  : {
+                "address":"Insurance"
+            }
+        }
+    },
+    "Insurance" : {
+        "key" : {
+            "address":"id"
+        },
+        "attribute" : {
+            "string"  :"from"
+        }
+    },
+    "root": {
+        "attribute" : {
+            "list"  : {
+                "string":"Country"
+            }
+        }
+    }
+}

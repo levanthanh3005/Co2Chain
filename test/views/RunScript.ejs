@@ -1,0 +1,100 @@
+<!doctype>
+<html>
+
+<head>
+
+<link rel="stylesheet" type="text/css" href="css/adddata.css">
+
+<link rel="stylesheet" type="text/css" href="css/view.css">
+
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+
+<script type="text/javascript"
+	src="lib/dist/bignumber.min.js"></script>
+<script type="text/javascript"
+	src="lib/dist/web3.js"></script>
+
+<script src="lib/sha256.js"></script>
+
+	
+<script src="lib/runscript.js"></script>
+
+</head>
+<body style="text-align:center">
+
+	<h1 >EU Insitution controller - CO2 Chain</h1>
+	<img src="CO2Chain Logo.png" alt="Our logo" style="width:200px;display:block;margin:auto">
+
+	<h2>Data from Blockchain</h2>
+	
+	<input type="button" id="filter" value="Filter" />
+	<form class="form-style-4" id="filterdiv" style="display:block;margin:auto;margin-bottom:20px">
+		<label for="field1">
+		<span>VIN</span><input type="text" id="VIN" required="true" />
+		</label>
+
+		<label>
+		<span> </span><input type="button" id="startfilter" value="Start filterring" />
+		</label>
+
+		<label>
+		<span> </span><input type="button" id="unfilter" value="Remove filterring" />
+		</label>
+	</form>
+	<div class="tableContainer">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%" class="scrollTable">
+		<thead class="fixedHeader">
+			<tr>
+				<th width="45%">Hash Vim + nonce</th>
+				<th width="49%">Hash data</th>
+				<th width="10%">Check hash</th>
+			</tr>
+		</thead>
+		<tbody class="scrollContent" id="tbody1">
+
+		</tbody>
+		</table>
+		</div>
+
+	<div>
+
+	<br>
+
+	<h2>Data from Distributed Database</h2>
+
+
+	<div class="tableContainer">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%" class="scrollTable">
+		<thead class="fixedHeader">
+			<tr>
+				<th width="41%">Hash Vin + nonce</th>
+				<th width="15%">Distance</th>
+				<th width="15%">Fuel</th>
+				<th width="22%">Vector</th>
+				<th width="10%">OEM</th>
+				<th width="20%">VVT</th>
+			</tr>
+		</thead>
+		<tbody class="scrollContent" id="tbody2">
+
+		</tbody>
+		</table>
+		</div>
+
+	<div>
+
+	<div id="showInfor">
+	</div>
+
+	<br></div>
+
+	<div id = "graphshow">
+		<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+		<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	</div>
+</body>
+</html>
+

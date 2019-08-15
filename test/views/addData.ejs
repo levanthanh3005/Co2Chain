@@ -1,0 +1,67 @@
+<!doctype>
+<html>
+
+<head>
+
+<link rel="stylesheet" type="text/css" href="css/adddata.css">
+
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script type="text/javascript"
+	src="lib/dist/bignumber.min.js"></script>
+<script type="text/javascript"
+	src="lib/dist/web3.js"></script>
+	
+<script src="lib/sha256.js"></script>
+
+<script src="lib/adddata.js"></script>
+
+</head>
+<body>
+	<h1 style="text-align:center" >CO2 calculation submission queries</h1>
+	<img src="CO2Chain Logo.png" alt="Our logo" style="width:200px;display:block;margin:auto">
+	<h3>
+		Send to Eth {hash(VIN + nonce), hash(data)} <br><br>
+		Send to distributed database { hash1 : hash1, distance : distance, fuel : fuel, oem : oem, vvt : vvt, vector : vector
+		}
+	</h3>
+	<h1 style="text-align:center" >Sample view of CO2 calculation submision</h1>
+	<form class="form-style-4" style="display:block;margin:auto">
+		<label for="field1">
+		<span>VIN</span><input type="text" id="VIN" required="true" />
+		</label>
+		<label for="field2">
+		<span>Distance</span><input type="text" id="Distance" required="true" />
+		</label>
+		<label for="field3">
+		<span>Fuel Consumtion</span><input type="text" id="Fuel" required="true" />
+		</label>
+		<label for="field4">
+		<span>OEM</span><input type="text" id="OEM" required="true" />
+		</label>
+
+		<label for="field5">
+		<span>VVT</span><input type="text" id="VVT" required="true" />
+		</label>
+
+		<label for="field5">
+		<span>Vector</span><input type="text" id="Vector" required="true" />
+		</label>
+
+		<label>
+		<span> </span><input type="button" id="random2" value="Random value without VIN" />
+		</label>
+
+		<label>
+		<span> </span><input type="button" id="send" value="Hash & Send data" />
+		</label>
+
+		<label>
+		<span> </span><input type="button" id="randsend" value="Random & Send data" />
+		</label>
+	</form>
+</br>
+</body>
+</html>
+
