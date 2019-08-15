@@ -42,7 +42,9 @@ $(document).ready(function() {
             console.log("done init");
             // addRandomLogs();
             getAllDataFromLocal(function(){
-                getAllLogs();
+                getAllLogs(function(){
+                    // showDataLocal();
+                });
                 drawGraph();
             });
         })
@@ -59,13 +61,17 @@ $(document).ready(function() {
         // getAllLogs();
     }
     
-    function getAllLogs(){
+    function getAllLogs(maincallback){
         var index = 0;
+        $("#tbody2").html("");
+        $("#tbody1").html("");
+
         console.log(myContract);
         function callback() {
             run()
         }
         function run() {
+
             myContract.getData(index,function (error, result) {
                     if (!error){
                         // console.log(index+">>>");
@@ -78,20 +84,36 @@ $(document).ready(function() {
                             // checkHash : checkHash
                         })
 
-                        checkHash = checkHashValue(index) > -1 ? "<span style='font-size:10px;'>&#9989;</span>" : "<span style='font-size:10px;'>&#10060;</span>";
+                        ckValue = checkHashValue(index);
+                        checkHash = ckValue.e > -1 ? "<span style='font-size:10px;'>&#9989;</span>" : "<span style='font-size:10px;'>&#10060;</span>";
                         ethDb[index].checkHash = checkHash;
 
                         $("#tbody1").append("<tr class='tb1rowtr'>"
                             +"<td width='20%'><div class='tb1row "+index+"'>"+result[0]+"</div></td>"
                             +"<td width='30%'>"+result[1]+"</td>"
-                            +"<td width='5%'>"+checkHash+"</td></tr>");
+                            // +"<td width='5%'>"+checkHash+"</td>"
+                            +"</tr>");
+
+                        var checkHash = ckValue.status ? "<span style='font-size:10px;'>&#9989;</span>" : "<span style='font-size:10px;'>&#10060;</span>";
+
+                        $("#tbody2").append("<tr><td width='25%' id='tb2row "+ckValue.id+"'>"
+                            +localDb[ckValue.id].hash1+"</td><td width='25%'>"
+                            +localDb[ckValue.id].distance+"</td><td width='25%'>"
+                            +localDb[ckValue.id].fuel+"</td><td width='25%'>"
+                            +localDb[ckValue.id].vector+"</td><td width='25%'>"
+                            +localDb[ckValue.id].oem+"</td><td width='25%'>"
+                            +localDb[ckValue.id].vvt+"</td><td width='25%'>"
+                            +checkHash+"</td></tr>");
 
                         index++;
                         if (index < result[2]) {
                             callback();
+                        } else {
+                            maincallback();
                         }
                     }else {
-                        console.log("Stop")
+                        console.log("Stop");
+                        maincallback();
                     }
             })
         }
@@ -103,23 +125,47 @@ $(document).ready(function() {
 
     function getAllDataFromLocal(callback){
         $.get( "/getdatalocal", function( data ) {
-            console.log(data);
+            // console.log(data);
             
             localDb = data;
 
-            for (e in data) {
-                // console.log(data[e]);
-                $("#tbody2").append("<tr><td width='25%' id='tb2row "+e+"'>"
-                            +data[e].hash1+"</td><td width='25%'>"
-                            +data[e].distance+"</td><td width='25%'>"
-                            +data[e].fuel+"</td><td width='25%'>"
-                            +data[e].vector+"</td><td width='25%'>"
-                            +data[e].oem+"</td><td width='25%'>"
-                            +data[e].vvt+"</td></tr>");
-            }
+            // $("#tbody2").html("");
+
+            // for (var e in localDb) {
+            //     // console.log(data[e]);
+
+                
+            //     $("#tbody2").append("<tr><td width='25%' id='tb2row "+e+"'>"
+            //                 +localDb[e].hash1+"</td><td width='25%'>"
+            //                 +localDb[e].distance+"</td><td width='25%'>"
+            //                 +localDb[e].fuel+"</td><td width='25%'>"
+            //                 +localDb[e].vector+"</td><td width='25%'>"
+            //                 +localDb[e].oem+"</td><td width='25%'>"
+            //                 +localDb[e].vvt+"</td><td width='25%'>"
+            //                 +""+"</td></tr>");
+            // }
+
             // drawGraph();
             callback();
         });
+    }
+
+    function showDataLocal() {
+        $("#tbody2").html("");
+
+        for (var e in localDb) {
+            // console.log(data[e]);
+            var checkHash = localDb[e].checkHash ? "<span style='font-size:10px;'>&#9989;</span>" : "<span style='font-size:10px;'>&#10060;</span>";
+            
+            $("#tbody2").append("<tr><td width='25%' id='tb2row "+e+"'>"
+                        +localDb[e].hash1+"</td><td width='25%'>"
+                        +localDb[e].distance+"</td><td width='25%'>"
+                        +localDb[e].fuel+"</td><td width='25%'>"
+                        +localDb[e].vector+"</td><td width='25%'>"
+                        +localDb[e].oem+"</td><td width='25%'>"
+                        +localDb[e].vvt+"</td><td width='25%'>"
+                        +checkHash+"</td></tr>");
+        }
     }
 
     function addLogIntoBlockchain(hash1, hash2){
@@ -163,19 +209,25 @@ $(document).ready(function() {
             if (ethDb[id].hash1 == localDb[e].hash1) {
                 var has2Check = sha256(localDb[e].distance+localDb[e].fuel+localDb[e].oem+localDb[e].vvt+localDb[e].vector);
                 if (has2Check == ethDb[id].hash2) {
-                    return e;
+                    // localDb[e].checkHash = true;
+                    // ethDb[id].checkHash = true;
+                    return {e : e, id : id, status : true};
                 } else {
-                    return -1;
+                    // localDb[e].checkHash = false;
+                    // ethDb[id].checkHash = false;
+                    return {e : e, id : id, status : false};
                 }
                 break;
             }
         }
-        return -1;
+        // localDb[e].checkHash = false;
+        // ethDb[id].checkHash = false;
+        return {e : -1, id : -1, status : false};
     }
 
     $('#tbody1').on('click','.tb1row',function(){
         var id = $(this).attr("class").split(" ")[1];
-        var e = checkHashValue(id);
+        var e = checkHashValue(id).e;
         if (e > -1) {
             $("#showInfor").html(
                 "<h1>Data in Blockchain</h1><br>"+
@@ -254,7 +306,7 @@ $(document).ready(function() {
             hash1 = sha256(vin + nonce);
             if (ethDb[e].hash1 == hash1) {
                 nonce++;
-                var i = checkHashValue(e);
+                var i = checkHashValue(e).e;
                 checkHash = i > -1 ? "<span style='font-size:10px;'>&#9989;</span>" : "<span style='font-size:10px;'>&#10060;</span>";
 
                 $("#tbody1").append("<tr class='tb1rowtr'>"
@@ -303,7 +355,7 @@ $(document).ready(function() {
             dataPoints[e].y = Math.round(dataPoints[e].fuel / dataPoints[e].num);
         }
 
-        console.log(dataPoints);
+        // console.log(dataPoints);
 
         var chart = new CanvasJS.Chart("chartContainer", {
             animationEnabled: true,
